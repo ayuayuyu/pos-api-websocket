@@ -41,9 +41,9 @@ async def api_endpoint(key: str):
     #countに1プラスする関数
     id_ = counter.getCount()
     key_store[key] = id_
-    await manager.send_text(json.dumps({"state": "payed", "id": id_}),key)
+    await manager.send_text(json.dumps({"status": "payed", "id": id_}),key)
     manager.disconnect(key)
-    return {"state": "payed", "id": id_}
+    return {"status": "payed", "id": id_}
 
 @app.websocket("/ws/{key}")
 async def websocket_endpoint(websocket: WebSocket,key:str):
@@ -53,7 +53,7 @@ async def websocket_endpoint(websocket: WebSocket,key:str):
             key = await websocket.receive_text()
             #keyだけ送られたとき
             key_store[key] = None
-            await websocket.send_text(json.dumps({"state": "waiting"}))
+            await websocket.send_text(json.dumps({"status": "waiting"}))
     except WebSocketDisconnect:
         #接続が切れた場合は削除
         manager.disconnect(key)
