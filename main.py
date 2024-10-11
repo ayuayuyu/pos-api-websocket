@@ -43,7 +43,7 @@ async def api_endpoint(key: str):
     key_store[key] = id_
     await manager.send_text(json.dumps({"state": "payed", "id": id_}),key)
     manager.disconnect(key)
-    return {"state": "payed", "id": {id_}}
+    return {"state": "payed", "id": id_}
 
 @app.websocket("/ws/{key}")
 async def websocket_endpoint(websocket: WebSocket,key:str):
