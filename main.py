@@ -38,6 +38,8 @@ async def api_endpoint(key: str):
     """
     keyのエンドポイント
     """
+    if key not in key_store:
+        return {"status": "notfound"}
     #counterに1プラスする関数
     id_ = counter.getCount()
     key_store[key] = id_
