@@ -10,8 +10,8 @@ class WsManager:
         await websocket.accept()
         self.active_connections[key] = websocket
 
-    def disconnect(self, websocket: WebSocket,key:str):
-        websocket.close()
+    def disconnect(self,key:str):
+        self.active_connections[key].close()
         del self.active_connections[key]
 
     async def send_text(self, message: str,key:str):
