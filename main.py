@@ -41,7 +41,7 @@ async def api_endpoint(key: str):
     #countに1プラスする関数
     id_ = counter.getCount()
     key_store[key] = id_
-    await manager.send_text(json.dumps({"state": "payed", "id": {id_}}),key)
+    await manager.send_text(json.dumps({"state": "payed", "id": id_}),key)
     manager.disconnect(key)
     return {"state": "payed", "id": {id_}}
 
@@ -60,3 +60,4 @@ async def websocket_endpoint(websocket: WebSocket,key:str):
         #keyの削除
         print(f"remove key: {key}")
         del key_store[key]
+    
