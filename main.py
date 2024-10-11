@@ -3,14 +3,12 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from src.WsManager import WsManager
-from src.models import Datas
 import json
-# from src.filter import filter
 
 manager = WsManager()
-# filters = filter()
 app = FastAPI()
 
+#dictでkeyとidを保存する
 key_store = {}
 
 class Counter():
@@ -33,12 +31,12 @@ app.add_middleware(
 
 @app.get("/")
 async def get():
-    return HTMLResponse("Hello POS System")
+    return HTMLResponse("POS System Create By Sysken")
 
 @app.get("/api/key/{key}")
 #keyのエンドポイント
 async def api_endpoint(key: str):
-    #countに1プラスする関数
+    #counterに1プラスする関数
     id_ = counter.getCount()
     key_store[key] = id_
     await manager.send_text(json.dumps({"status": "payed", "id": id_}),key)
@@ -46,6 +44,7 @@ async def api_endpoint(key: str):
     return {"status": "payed", "id": id_}
 
 @app.websocket("/ws/{key}")
+#webSocketのエンドポイント
 async def websocket_endpoint(websocket: WebSocket,key:str):
     await manager.connect(websocket,key)
     try:
