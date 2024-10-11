@@ -34,8 +34,10 @@ async def get():
     return HTMLResponse("POS System Create By Sysken")
 
 @app.get("/api/key/{key}")
-#keyのエンドポイント
 async def api_endpoint(key: str):
+    """
+    keyのエンドポイント
+    """
     #counterに1プラスする関数
     id_ = counter.getCount()
     key_store[key] = id_
@@ -44,8 +46,10 @@ async def api_endpoint(key: str):
     return {"status": "payed", "id": id_}
 
 @app.websocket("/ws/{key}")
-#webSocketのエンドポイント
 async def websocket_endpoint(websocket: WebSocket,key:str):
+    """
+    webSocketのエンドポイント
+    """
     await manager.connect(websocket,key)
     try:
         while True:
@@ -58,5 +62,7 @@ async def websocket_endpoint(websocket: WebSocket,key:str):
         manager.disconnect(key)
         #keyの削除
         print(f"remove key: {key}")
-        del key_store[key]
+        if key in key_store:
+            del key_store[key]
+
     
