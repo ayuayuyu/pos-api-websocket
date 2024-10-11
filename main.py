@@ -38,11 +38,11 @@ async def api_endpoint(key: str):
     """
     keyのエンドポイント
     """
-    if key not in key_store:
-        return {"status": "notfound"}
     #counterに1プラスする関数
     id_ = counter.getCount()
     key_store[key] = id_
+    if key not in key_store:
+        return {"status": "notfound"}
     await manager.send_text(json.dumps({"status": "payed", "id": id_}),key)
     manager.disconnect(key)
     return {"status": "payed", "id": id_}
