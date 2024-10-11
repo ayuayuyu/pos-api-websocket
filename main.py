@@ -4,11 +4,23 @@ from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from src.WsManager import WsManager
 from src.models import Datas
-from src.filter import filter
+import json
+# from src.filter import filter
 
 manager = WsManager()
-filters = filter()
+# filters = filter()
 app = FastAPI()
+
+key_store = {}
+
+class Counter():
+    counter =  0
+    
+    def getCount(self):
+        self.counter+=1
+        return self.counter
+    
+counter = Counter()
 
 # CORSの設定を追加
 app.add_middleware(
@@ -27,27 +39,24 @@ async def get():
 #keyのエンドポイント
 async def api_endpoint(key: str):
     #countに1プラスする関数
-    filters.setCount()
-    filters.keys[key] = filters.getCount()
-    return {"state": "payed", "id": {filters.getCount()}}
+    id_ = counter.getCount()
+    key_store[key] = id_
+    await manager.send_text(json.dumps({"state": "payed", "id": {id_}}),key)
+    manager.disconnect(key)
+    return {"state": "payed", "id": {id_}}
 
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket,data: Datas):
-    await manager.connect(websocket)
+@app.websocket("/ws/{key}")
+async def websocket_endpoint(websocket: WebSocket,key:str):
+    await manager.connect(websocket,key)
     try:
         while True:
-            datas = await websocket.receive_text()
+            key = await websocket.receive_text()
             #keyだけ送られたとき
-            if datas:
-                filters.key[datas] = "null"
-                print(f"dict: {filters.keys()}")
-                await manager.send_text({"state": "waiting"})
-            #keyとidがある時
-            else:
-                filters.keys[data.key] = data.id
+            key_store[key] = None
+            await websocket.send_text(json.dumps({"state": "waiting"}))
     except WebSocketDisconnect:
         #接続が切れた場合は削除
         manager.disconnect(websocket)
         #keyの削除
-        print(f"remove key: {data.key}")
-        del filters.keys[data.key]
+        print(f"remove key: {key}")
+        del key_store[key]
