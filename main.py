@@ -56,7 +56,7 @@ async def websocket_endpoint(websocket: WebSocket,key:str):
             await websocket.send_text(json.dumps({"state": "waiting"}))
     except WebSocketDisconnect:
         #接続が切れた場合は削除
-        manager.disconnect(websocket)
+        manager.disconnect(key)
         #keyの削除
         print(f"remove key: {key}")
         del key_store[key]
