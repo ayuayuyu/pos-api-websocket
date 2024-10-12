@@ -13,7 +13,7 @@ class WsManager:
     async def disconnect(self,key:str):
         if self.active_connections[key]:
             await self.active_connections[key].close()
-        del self.active_connections[key]
+            del self.active_connections[key]
 
     async def send_text(self, message: str,key:str):
         await self.active_connections[key].send_text(message)
