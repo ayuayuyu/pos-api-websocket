@@ -39,8 +39,7 @@ async def api_endpoint(key: str):
     keyのエンドポイント
     """
     if key in key_store:
-        print(f"key: {key} key_store: {key_store.keys()}")
-        return {"status": "found"}
+        print("found")
     if key not in key_store:
         print(f"key: {key} key_store: {key_store.keys()}")
         return {"status": "notfound"}
