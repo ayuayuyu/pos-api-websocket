@@ -66,6 +66,7 @@ async def websocket_endpoint(websocket: WebSocket,key:str):
     except WebSocketDisconnect:
         #接続が切れた場合は削除
         await manager.disconnect(key)
+        print("WebSocket close")
         #keyの削除
         print(f"remove key: {key}")
         if key in key_store:
